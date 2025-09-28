@@ -1,8 +1,7 @@
-import React, { useEffect, useRef } from 'react';
-import { Renderer, Program, Mesh, Triangle } from 'https://cdn.skypack.dev/ogl';
+import React, { useState, useEffect, useRef } from 'react';
+import { Renderer, Program, Mesh, Triangle } from 'ogl';
 
-// --- Plasma Component Code ---
-
+// --- Plasma Component ---
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return [1, 0.5, 0.2];
@@ -37,25 +36,25 @@ out vec4 fragColor;
 void mainImage(out vec4 o, vec2 C) {
   vec2 center = iResolution.xy * 0.5;
   C = (C - center) / uScale + center;
-  
+
   vec2 mouseOffset = (uMouse - center) * 0.0002;
   C += mouseOffset * length(C - center) * step(0.5, uMouseInteractive);
-  
+
   float i, d, z, T = iTime * uSpeed * uDirection;
   vec3 O, p, S;
 
   for (vec2 r = iResolution.xy, Q; ++i < 60.; O += o.w/d*o.xyz) {
-    p = z*normalize(vec3(C-.5*r,r.y)); 
-    p.z -= 4.; 
+    p = z*normalize(vec3(C-.5*r,r.y));
+    p.z -= 4.;
     S = p;
     d = p.y-T;
-    
-    p.x += .4*(1.+p.y)*sin(d + p.x*0.1)*cos(.34*d + p.x*0.05); 
-    Q = p.xz *= mat2(cos(p.y+vec4(0,11,33,0)-T)); 
-    z+= d = abs(sqrt(length(Q*Q)) - .25*(5.+S.y))/3.+8e-4; 
+
+    p.x += .4*(1.+p.y)*sin(d + p.x*0.1)*cos(.34*d + p.x*0.05);
+    Q = p.xz *= mat2(cos(p.y+vec4(0,11,33,0)-T));
+    z+= d = abs(sqrt(length(Q*Q)) - .25*(5.+S.y))/3.+8e-4;
     o = 1.+sin(S.y+p.z*.5+S.z-length(S-p)+vec4(2,1,0,8));
   }
-  
+
   o.xyz = tanh(O/1e4);
 }
 
@@ -72,11 +71,11 @@ void main() {
   vec4 o = vec4(0.0);
   mainImage(o, gl_FragCoord.xy);
   vec3 rgb = sanitize(o.rgb);
-  
+
   float intensity = (rgb.r + rgb.g + rgb.b) / 3.0;
   vec3 customColor = intensity * uCustomColor;
   vec3 finalColor = mix(rgb, customColor, step(0.5, uUseCustomColor));
-  
+
   float alpha = length(rgb) * uOpacity;
   fragColor = vec4(finalColor, alpha);
 }`;
@@ -95,8 +94,11 @@ const Plasma = ({
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const currentContainer = containerRef.current;
+
     const useCustomColor = color ? 1.0 : 0.0;
     const customColorRgb = color ? hexToRgb(color) : [1, 1, 1];
+
     const directionMultiplier = direction === 'reverse' ? -1.0 : 1.0;
 
     const renderer = new Renderer({
@@ -110,9 +112,10 @@ const Plasma = ({
     canvas.style.display = 'block';
     canvas.style.width = '100%';
     canvas.style.height = '100%';
-    containerRef.current.appendChild(canvas);
+    currentContainer.appendChild(canvas);
 
     const geometry = new Triangle(gl);
+
     const program = new Program(gl, {
       vertex: vertex,
       fragment: fragment,
@@ -134,7 +137,7 @@ const Plasma = ({
 
     const handleMouseMove = (e) => {
       if (!mouseInteractive) return;
-      const rect = containerRef.current.getBoundingClientRect();
+      const rect = currentContainer.getBoundingClientRect();
       mousePos.current.x = e.clientX - rect.left;
       mousePos.current.y = e.clientY - rect.top;
       const mouseUniform = program.uniforms.uMouse.value;
@@ -143,11 +146,11 @@ const Plasma = ({
     };
 
     if (mouseInteractive) {
-      containerRef.current.addEventListener('mousemove', handleMouseMove);
+      currentContainer.addEventListener('mousemove', handleMouseMove);
     }
 
     const setSize = () => {
-      const rect = containerRef.current.getBoundingClientRect();
+      const rect = currentContainer.getBoundingClientRect();
       const width = Math.max(1, Math.floor(rect.width));
       const height = Math.max(1, Math.floor(rect.height));
       renderer.setSize(width, height);
@@ -157,7 +160,7 @@ const Plasma = ({
     };
 
     const ro = new ResizeObserver(setSize);
-    ro.observe(containerRef.current);
+    ro.observe(currentContainer);
     setSize();
 
     let raf = 0;
@@ -179,80 +182,240 @@ const Plasma = ({
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
-      if (mouseInteractive && containerRef.current) {
-        containerRef.current.removeEventListener('mousemove', handleMouseMove);
+      if (mouseInteractive) {
+        currentContainer.removeEventListener('mousemove', handleMouseMove);
       }
       try {
-        containerRef.current?.removeChild(canvas);
-      } catch { }
+        currentContainer.removeChild(canvas);
+      } catch (e) {
+        // Ignore errors on cleanup
+      }
     };
   }, [color, speed, direction, scale, opacity, mouseInteractive]);
 
-  return <div ref={containerRef} className="plasma-background" />;
+  return <div ref={containerRef} className="fixed top-0 left-0 w-full h-full -z-10" />;
 };
 
 
-// --- Main App Component ---
-
+// --- App Component ---
 function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <div className="App">
-      <style>{`
-        body {
-          margin: 0;
+       <style jsx="true">{`
+        .App {
           background-color: #000;
           color: white;
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-            'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-            sans-serif;
         }
-        
-        .App {
-          text-align: center;
-          position: relative;
-          width: 100vw;
-          height: 100vh;
-          overflow: hidden;
-        }
-        
-        .plasma-background {
+        .App-header {
           position: fixed;
           top: 0;
           left: 0;
           width: 100%;
-          height: 100%;
-          z-index: -1;
-        }
-        
-        .App-header {
-          min-height: 100vh;
+          padding: 20px 50px;
+          box-sizing: border-box;
+          z-index: 10;
           display: flex;
-          flex-direction: column;
+          justify-content: space-between;
           align-items: center;
-          justify-content: center;
-          font-size: calc(10px + 2vmin);
-          text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+          transition: all 0.4s ease-in-out;
+        }
+        .App-header.scrolled {
+            background-color: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 15px 50px;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 1200px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            transition: font-size 0.4s ease;
+        }
+
+        .App-header.scrolled .logo {
+            font-size: 1.5rem;
+        }
+
+        .main-nav {
+            display: flex;
         }
         
-        h1 {
-          font-size: 4rem;
-          font-weight: bold;
+        .main-nav a {
+          color: white;
+          text-decoration: none;
+          margin: 0 15px;
+          font-size: 1.2rem;
+          transition: color 0.3s ease;
+        }
+        .main-nav a:last-child {
+            margin-right: 0;
+        }
+        .main-nav a:hover {
+          color: #B19EEF;
+        }
+
+        /* Hamburger Menu Styles */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 2rem;
+            height: 2rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 20;
+        }
+
+        .hamburger:focus {
+            outline: none;
+        }
+
+        .hamburger .line {
+            width: 2rem;
+            height: 0.25rem;
+            background: white;
+            border-radius: 10px;
+            transition: all 0.3s linear;
+            position: relative;
+            transform-origin: 1px;
+        }
+        
+        .hamburger.open .line:nth-child(1) {
+            transform: rotate(45deg);
+        }
+
+        .hamburger.open .line:nth-child(2) {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .hamburger.open .line:nth-child(3) {
+            transform: rotate(-45deg);
+        }
+
+        /* Content Sections */
+        .content-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 50px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .content-section h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .content-section p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        /* Media Query for Mobile */
+        @media (max-width: 768px) {
+            .App-header {
+              padding: 20px 30px;
+            }
+            .App-header.scrolled {
+                padding: 10px 20px;
+                width: 90%;
+            }
+            .main-nav {
+                display: none;
+            }
+
+            .main-nav.open {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: fixed;
+                top: 0;
+                right: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.98);
+            }
+
+            .main-nav a {
+                font-size: 2rem;
+                margin: 2rem 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .content-section h1 {
+                font-size: 2.5rem;
+            }
         }
       `}</style>
-      <Plasma
-        color="#1a202c"
-        speed={0.7}
+      <Plasma 
+        color="#B19EEF"
+        speed={0.5} 
         scale={1.2}
-        opacity={0.8}
-        mouseInteractive={true}
+        opacity={1.0}
+        mouseInteractive={true} 
       />
-      <header className="App-header">
-        <h1>My Portfolio</h1>
-        <p>Coming Soon</p>
+      <header className={`App-header ${isScrolled ? 'scrolled' : ''}`}>
+        <a href="#home" className="logo">My Portfolio</a>
+        <nav className={`main-nav ${isMenuOpen ? 'open' : ''}`}>
+            <a href="#home" onClick={() => setIsMenuOpen(false)}>Home</a>
+            <a href="#about" onClick={() => setIsMenuOpen(false)}>About</a>
+            <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
+        </nav>
+        <button className={`hamburger ${isMenuOpen ? 'open' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Open navigation menu">
+          <div className="line"></div>
+          <div className="line"></div>
+          <div className="line"></div>
+        </button>
       </header>
+      
+      <main>
+        <section id="home" className="content-section">
+            <h1>Jayashree Das</h1>
+        </section>
+        <section id="about" className="content-section" style={{backgroundColor: '#000'}}>
+            <h1>About Me</h1>
+            <p>This section will contain information about your skills, experience, and passion.</p>
+        </section>
+        <section id="contact" className="content-section" style={{backgroundColor: '#000'}}>
+            <h1>Contact</h1>
+            <p>Here you can add a contact form or links to your social media profiles.</p>
+        </section>
+      </main>
     </div>
   );
 }
 
 export default App;
+
 
