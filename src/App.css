@@ -1,143 +1,45 @@
 body {
   margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-.app-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  width: 100vw;
-  background-color: #121212;
-  color: #c0c0c0;
-  font-family: 'Courier New', Courier, monospace;
-  text-align: left;
-}
-
-.welcome-text {
-  font-size: 3rem;
-  font-weight: bold;
-  animation: fade-in-out 2s forwards;
-}
-
-@keyframes fade-in-out {
-  0% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(1.2);
-  }
-}
-
-.terminal-container {
-  padding: 20px;
-}
-
-.typing-text {
-  font-size: 1.5rem;
-  white-space: pre-wrap;
-  text-align: left;
-}
-
-.blinking-cursor {
-  font-weight: bold;
-  animation: blink 0.75s step-end infinite;
-}
-
-@keyframes blink {
-
-  from,
-  to {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-}
-
-.glitch-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
   background-color: #000;
-  z-index: 999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  animation: fade-in-out 0.8s forwards; /* The animation that makes the glitch appear and disappear */
+  /* Fallback background */
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
 }
 
-@keyframes fade-in-out {
-  0% { opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-.glitch-text {
-  font-family: 'Courier New', Courier, monospace;
+.App {
+  text-align: center;
   position: relative;
-  font-size: 5rem;
-  color: #fff;
-  animation: text-glitch-color-shift 0.2s linear infinite alternate;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  /* Hide anything that might spill out */
 }
 
-.glitch-text::before,
-.glitch-text::after {
-  content: attr(data-text);
-  position: absolute;
+/* This is the crucial part for the background */
+.plasma-background {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: -1;
+  /* Place it behind all other content */
 }
 
-.glitch-text::before {
-  left: 2px;
-  text-shadow: -2px 0 red;
-  animation: glitch-anim-1 0.7s infinite linear alternate-reverse;
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  /* Add a subtle text shadow to make text more readable */
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.glitch-text::after {
-  left: -2px;
-  text-shadow: 2px 0 cyan;
-  animation: glitch-anim-2 0.7s infinite linear alternate-reverse;
-}
-
-/* Keyframe animations for the text glitch effect */
-@keyframes glitch-anim-1 {
-  0% { transform: translate(0); }
-  20% { transform: translate(-5px, 5px); }
-  40% { transform: translate(-5px, -5px); }
-  60% { transform: translate(5px, 5px); }
-  80% { transform: translate(5px, -5px); }
-  100% { transform: translate(0); }
-}
-
-@keyframes glitch-anim-2 {
-  0% { transform: translate(0); }
-  20% { transform: translate(-5px, -5px); }
-  40% { transform: translate(5px, -5px); }
-  60% { transform: translate(-5px, 5px); }
-  80% { transform: translate(5px, 5px); }
-  100% { transform: translate(0); }
-}
-
-@keyframes text-glitch-color-shift {
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
+h1 {
+  font-size: 4rem;
+  font-weight: bold;
 }
