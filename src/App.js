@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 
-// --- Plasma Component (No changes needed here) ---
+// --- Plasma Component ---
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return [1, 0.5, 0.2];
@@ -201,6 +201,40 @@ const Plasma = ({
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [typedText, setTypedText] = useState('');
+  
+  const typingSpeed = 40;
+  const pauseDuration = 1200;
+
+  const textIndexRef = useRef(0);
+  const charIndexRef = useRef(0);
+
+  useEffect(() => {
+    const textArray = [
+      "MERN Stack Developer || Full-Stack Web Developer",
+      "MongoDB & Cloud Integration Engineer || Real-Time App Developer (Socket.io)",
+      "Open-Source Contributor || Computer Science Undergraduate Developer"
+    ];
+
+    let timeoutId;
+    const type = () => {
+      const currentString = textArray[textIndexRef.current];
+      if (charIndexRef.current < currentString.length) {
+        setTypedText(currentString.substring(0, charIndexRef.current + 1));
+        charIndexRef.current++;
+        timeoutId = setTimeout(type, typingSpeed);
+      } else {
+        timeoutId = setTimeout(() => {
+          textIndexRef.current = (textIndexRef.current + 1) % textArray.length;
+          charIndexRef.current = 0;
+          setTypedText('');
+          timeoutId = setTimeout(type, typingSpeed);
+        }, pauseDuration);
+      }
+    };
+    timeoutId = setTimeout(type, typingSpeed);
+    return () => clearTimeout(timeoutId);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -213,105 +247,91 @@ function App() {
   }, []);
 
   return (
-    <div className="App" id="home">
-      <style jsx="true">{`
-    .App {
-      background-color: #000;
-      color: white;
-    }
-    
-    /* --- UPDATED SECTION --- */
-    .App-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 20px 50px;
-      box-sizing: border-box;
-      z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      /* Replaced 'transition: all' with specific properties */
-      transition: width 0.4s ease-in-out, 
-                  top 0.4s ease-in-out, 
-                  padding 0.4s ease-in-out, 
-                  background-color 0.4s ease-in-out, 
-                  backdrop-filter 0.4s ease-in-out;
+    <div className="App" id="home"> 
+        <style jsx="true">{`
+            :global(html) {
+              scroll-behavior: smooth; /* Enables smooth scrolling for the whole page */
+            }
+            .App { background-color: #000; color: white; }
+            .App-header { position: fixed; top: 0; left: 0; width: 100%; padding: 20px 50px; box-sizing: border-box; z-index: 10; display: flex; justify-content: space-between; align-items: center; transition: width 0.4s ease-in-out, top 0.4s ease-in-out, padding 0.4s ease-in-out, background-color 0.4s ease-in-out, backdrop-filter 0.4s ease-in-out; will-change: width, top, padding; }
+            .App-header.scrolled { background-color: rgba(10, 10, 10, 0.7); backdrop-filter: blur(10px); padding: 15px 50px; top: 15px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
+            .logo { font-size: 1.8rem; font-weight: bold; color: white; text-decoration: none; transition: font-size 0.4s ease; }
+            .App-header.scrolled .logo { font-size: 1.5rem; }
+            .main-nav { display: flex; }
+            .main-nav a { color: white; text-decoration: none; margin: 0 15px; font-size: 1.2rem; transition: color 0.3s ease; }
+            .main-nav a:last-child { margin-right: 0; }
+            .main-nav a:hover { color: #B19EEF; }
+            .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 2rem; height: 2rem; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 20; }
+            .hamburger:focus { outline: none; }
+            .hamburger .line { width: 2rem; height: 0.25rem; background: white; border-radius: 10px; transition: all 0.3s linear; position: relative; transform-origin: 1px; }
+            .hamburger.open .line:nth-child(1) { transform: rotate(45deg); }
+            .hamburger.open .line:nth-child(2) { opacity: 0; transform: translateX(20px); }
+            .hamburger.open .line:nth-child(3) { transform: rotate(-45deg); }
+            .hero-name-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; z-index: 1; }
+            .intro-text { font-size: 4rem; color: #ccc; margin: 0; text-align: center; }
+            .main-name { font-size: 6rem; margin: 0; text-align: center; line-height: 1.1; }
+            .subtitle { font-size: 1.4rem; text-align: center; margin-top: 1rem; color: #ccc; }
+            .typewriter-cursor::after { content: '|'; color: white; animation: blink 1s step-end infinite; }
+            @keyframes blink { from, to { color: transparent; } 50% { color: white; } }
+            .content-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 100px 50px; box-sizing: border-box; position: relative; }
+            .content-section h1 { font-size: 4rem; margin-bottom: 20px; text-align: center; }
+            .content-section p { font-size: 1.2rem; max-width: 600px; text-align: center; color: #ccc; }
+            
+            /* === NEW CSS FOR SCROLL ARROW START === */
+            .scroll-down-arrow {
+              position: absolute;
+              bottom: 30px;
+              left: 50%;
+              transform: translateX(-50%);
+              z-index: 5;
+            }
+            .scroll-down-arrow span {
+              display: block;
+              width: 20px;
+              height: 20px;
+              border-bottom: 2px solid white;
+              border-right: 2px solid white;
+              transform: rotate(45deg);
+              animation: bounce 2s infinite;
+            }
+            @keyframes bounce {
+              0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) rotate(45deg);
+              }
+              40% {
+                transform: translateY(-15px) rotate(45deg);
+              }
+              60% {
+                transform: translateY(-8px) rotate(45deg);
+              }
+            }
+            /* === NEW CSS FOR SCROLL ARROW END === */
 
-      /* Added a performance hint for the browser */
-      will-change: width, top, padding;
-    }
-    /* --- END OF UPDATE --- */
-
-    .App-header.scrolled {
-        background-color: rgba(10, 10, 10, 0.7);
-        backdrop-filter: blur(10px);
-        padding: 15px 50px;
-        top: 15px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 95%;
-        max-width: 1200px;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-
-    .logo {
-        font-size: 1.8rem;
-        font-weight: bold;
-        color: white;
-        text-decoration: none;
-        transition: font-size 0.4s ease;
-    }
-
-    .App-header.scrolled .logo {
-        font-size: 1.5rem;
-    }
-
-    /* ... (rest of the CSS is the same) ... */
-
-    .main-nav { display: flex; }
-    .main-nav a { color: white; text-decoration: none; margin: 0 15px; font-size: 1.2rem; transition: color 0.3s ease; }
-    .main-nav a:last-child { margin-right: 0; }
-    .main-nav a:hover { color: #B19EEF; }
-    .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 2rem; height: 2rem; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 20; }
-    .hamburger:focus { outline: none; }
-    .hamburger .line { width: 2rem; height: 0.25rem; background: white; border-radius: 10px; transition: all 0.3s linear; position: relative; transform-origin: 1px; }
-    .hamburger.open .line:nth-child(1) { transform: rotate(45deg); }
-    .hamburger.open .line:nth-child(2) { opacity: 0; transform: translateX(20px); }
-    .hamburger.open .line:nth-child(3) { transform: rotate(-45deg); }
-    .hero-name-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; z-index: 1; }
-    .hero-name-overlay h1 { font-size: 4rem; margin-bottom: 10px; text-align: center; }
-    .hero-name-overlay p { font-size: 1.2rem; color: #ccc; text-align: center; }
-    .content-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 100px 50px; box-sizing: border-box; position: relative; }
-    .content-section h1 { font-size: 4rem; margin-bottom: 20px; text-align: center; }
-    .content-section p { font-size: 1.2rem; max-width: 600px; text-align: center; color: #ccc; }
-    @media (max-width: 768px) {
-        .App-header { padding: 20px 30px; }
-        .App-header.scrolled { padding: 10px 20px; width: 90%; }
-        .main-nav { display: none; }
-        .main-nav.open { display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; right: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.98); }
-        .main-nav a { font-size: 2rem; margin: 2rem 0; }
-        .hamburger { display: flex; }
-        .content-section h1, .hero-name-overlay h1 { font-size: 2.5rem; }
-    }
-`}
-      </style>
-      <Plasma
+            @media (max-width: 768px) {
+                .App-header { padding: 20px 30px; }
+                .App-header.scrolled { padding: 10px 20px; width: 90%; }
+                .main-nav { display: none; }
+                .main-nav.open { display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; right: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.98); }
+                .main-nav a { font-size: 2rem; margin: 2rem 0; }
+                .hamburger { display: flex; }
+                .content-section h1 { font-size: 2.5rem; }
+                .main-name { font-size: 3.5rem; }
+                .intro-text { font-size: 1.2rem; }
+            }
+      `}</style>
+      <Plasma 
         color="#B19EEF"
-        speed={0.5}
+        speed={0.5} 
         scale={1.2}
         opacity={1.0}
-        mouseInteractive={true}
+        mouseInteractive={true} 
       />
       <header className={`App-header ${isScrolled ? 'scrolled' : ''}`}>
         <a href="#home" className="logo">My Portfolio</a>
         <nav className={`main-nav ${isMenuOpen ? 'open' : ''}`}>
-          <a href="#home" onClick={() => setIsMenuOpen(false)}>Home</a>
-          <a href="#about" onClick={() => setIsMenuOpen(false)}>About</a>
-          <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
+            <a href="#home" onClick={() => setIsMenuOpen(false)}>Home</a>
+            <a href="#about" onClick={() => setIsMenuOpen(false)}>About</a>
+            <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
         </nav>
         <button className={`hamburger ${isMenuOpen ? 'open' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Open navigation menu">
           <div className="line"></div>
@@ -319,26 +339,32 @@ function App() {
           <div className="line"></div>
         </button>
       </header>
-
-      {/* === NAME OVERLAY === */}
+      
       <div className="hero-name-overlay">
-        <h1>Jayashree Das</h1>
-        <p>Creative Developer & Designer</p>
+        <p className="intro-text">Hello, I am</p>
+        <h1 className="main-name">Jayashree Das</h1>
+        <p className="subtitle typewriter-cursor">{typedText}</p>
       </div>
 
+      {/* === NEW JSX FOR SCROLL ARROW === */}
+      <a href="#about" className="scroll-down-arrow" aria-label="Scroll to next section">
+        <span></span>
+      </a>
+      
       <main>
-        {/* No home section here, so "About" is the first content block */}
-        <section id="about" className="content-section" style={{ backgroundColor: '#000' }}>
-          <h1>About Me</h1>
-          <p>This section will contain information about your skills, experience, and passion.</p>
+        <section id="about" className="content-section" style={{backgroundColor: '#000'}}>
+            <h1>About Me</h1>
+            <p>This section will contain information about your skills, experience, and passion.</p>
         </section>
-
-        <section id="contact" className="content-section" style={{ backgroundColor: '#000' }}>
-          <h1>Contact</h1>
-          <p>Here you can add a contact form or links to your social media profiles.</p>
+        
+        <section id="contact" className="content-section" style={{backgroundColor: '#000'}}>
+            <h1>Contact</h1>
+            <p>Here you can add a contact form or links to your social media profiles.</p>
         </section>
       </main>
     </div>
   );
 }
+
+
 export default App;
