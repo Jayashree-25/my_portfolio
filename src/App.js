@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 
+
 // --- Plasma Component ---
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -373,10 +374,10 @@ function App() {
             <div className="about-text">
               <h3>MERN Stack Developer</h3>
               <p>
-                I am passionate about creating scalable, user-centric web applications. Skilled in the MERN stack—React, Node.js, Express, and MongoDB—I enjoy transforming complex problems into clean, efficient solutions. I have built and deployed full-stack projects from concept to launch, integrating REST APIs, real-time features, and responsive design.
+                Hello! I'm Jayashree, a developer with a passion for building beautiful and functional web applications. My journey into the world of code started with a deep curiosity for how things work, and it has since evolved into a career where I can solve real-world problems.
               </p>
               <p>
-                I work effectively in collaborative environments, as demonstrated through open-source contributions and team-based projects. Committed to continuous learning and clean coding practices, I aim to create software that delivers measurable value and a seamless user experience.
+                I specialize in the MERN stack but I'm always eager to explore new technologies and expand my skill set. When I'm not coding, you can find me contributing to open-source projects or exploring the latest trends in cloud technology.
               </p>
             </div>
           </div>
