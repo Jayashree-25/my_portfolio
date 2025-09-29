@@ -250,7 +250,7 @@ function App() {
     <div className="App" id="home"> 
         <style jsx="true">{`
             :global(html) {
-              scroll-behavior: smooth; /* Enables smooth scrolling for the whole page */
+              scroll-behavior: smooth;
             }
             .App { background-color: #000; color: white; }
             .App-header { position: fixed; top: 0; left: 0; width: 100%; padding: 20px 50px; box-sizing: border-box; z-index: 10; display: flex; justify-content: space-between; align-items: center; transition: width 0.4s ease-in-out, top 0.4s ease-in-out, padding 0.4s ease-in-out, background-color 0.4s ease-in-out, backdrop-filter 0.4s ease-in-out; will-change: width, top, padding; }
@@ -268,7 +268,7 @@ function App() {
             .hamburger.open .line:nth-child(2) { opacity: 0; transform: translateX(20px); }
             .hamburger.open .line:nth-child(3) { transform: rotate(-45deg); }
             .hero-name-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; z-index: 1; }
-            .intro-text { font-size: 4rem; color: #ccc; margin: 0; text-align: center; }
+            .intro-text { font-size: 1.5rem; color: #ccc; margin: 0; text-align: center; }
             .main-name { font-size: 6rem; margin: 0; text-align: center; line-height: 1.1; }
             .subtitle { font-size: 1.4rem; text-align: center; margin-top: 1rem; color: #ccc; }
             .typewriter-cursor::after { content: '|'; color: white; animation: blink 1s step-end infinite; }
@@ -276,36 +276,41 @@ function App() {
             .content-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 100px 50px; box-sizing: border-box; position: relative; }
             .content-section h1 { font-size: 4rem; margin-bottom: 20px; text-align: center; }
             .content-section p { font-size: 1.2rem; max-width: 600px; text-align: center; color: #ccc; }
+            .scroll-down-arrow { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 5; }
+            .scroll-down-arrow span { display: block; width: 20px; height: 20px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); animation: bounce 2s infinite; }
+            @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0) rotate(45deg); } 40% { transform: translateY(-15px) rotate(45deg); } 60% { transform: translateY(-8px) rotate(45deg); } }
             
-            /* === NEW CSS FOR SCROLL ARROW START === */
-            .scroll-down-arrow {
-              position: absolute;
-              bottom: 30px;
-              left: 50%;
-              transform: translateX(-50%);
-              z-index: 5;
+            .about-content {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 50px;
+              max-width: 950px;
+              width: 100%;
+              flex-wrap: wrap;
             }
-            .scroll-down-arrow span {
-              display: block;
-              width: 20px;
-              height: 20px;
-              border-bottom: 2px solid white;
-              border-right: 2px solid white;
-              transform: rotate(45deg);
-              animation: bounce 2s infinite;
+            .about-image {
+              width: 300px;
+              height: 350px;
+              border-radius: 30%;
+              object-fit: cover;
+              border: 3px solid #B19EEF;
+              flex-shrink: 0;
             }
-            @keyframes bounce {
-              0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0) rotate(45deg);
-              }
-              40% {
-                transform: translateY(-15px) rotate(45deg);
-              }
-              60% {
-                transform: translateY(-8px) rotate(45deg);
-              }
+            .about-text {
+              flex: 1;
+              min-width: 300px;
             }
-            /* === NEW CSS FOR SCROLL ARROW END === */
+            .about-text h3 {
+              font-size: 2rem;
+              margin-bottom: 15px;
+              color: #B19EEF;
+            }
+            .about-text p {
+              text-align: left;
+              line-height: 1.6;
+              max-width: 100%;
+            }
 
             @media (max-width: 768px) {
                 .App-header { padding: 20px 30px; }
@@ -317,6 +322,12 @@ function App() {
                 .content-section h1 { font-size: 2.5rem; }
                 .main-name { font-size: 3.5rem; }
                 .intro-text { font-size: 1.2rem; }
+                .about-content {
+                  text-align: center;
+                }
+                .about-text p {
+                  text-align: center;
+                }
             }
       `}</style>
       <Plasma 
@@ -346,15 +357,29 @@ function App() {
         <p className="subtitle typewriter-cursor">{typedText}</p>
       </div>
 
-      {/* === NEW JSX FOR SCROLL ARROW === */}
       <a href="#about" className="scroll-down-arrow" aria-label="Scroll to next section">
         <span></span>
       </a>
       
       <main>
         <section id="about" className="content-section" style={{backgroundColor: '#000'}}>
-            <h1>About Me</h1>
-            <p>This section will contain information about your skills, experience, and passion.</p>
+          <h1>About Me</h1>
+          <div className="about-content">
+            <img 
+              src="/profile.png" 
+              alt="Jayashree" 
+              className="about-image"
+            />
+            <div className="about-text">
+              <h3>MERN Stack Developer</h3>
+              <p>
+                Hello! I'm Jayashree, a developer with a passion for building beautiful and functional web applications. My journey into the world of code started with a deep curiosity for how things work, and it has since evolved into a career where I can solve real-world problems.
+              </p>
+              <p>
+                I specialize in the MERN stack but I'm always eager to explore new technologies and expand my skill set. When I'm not coding, you can find me contributing to open-source projects or exploring the latest trends in cloud technology.
+              </p>
+            </div>
+          </div>
         </section>
         
         <section id="contact" className="content-section" style={{backgroundColor: '#000'}}>
