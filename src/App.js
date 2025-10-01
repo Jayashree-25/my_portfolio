@@ -219,9 +219,9 @@ function App() {
     { name: "Node.js", imageUrl: "/icons/node.png" },
     { name: "Express", imageUrl: "/icons/express.png" },
     { name: "MongoDB", imageUrl: "/icons/mongodb.png" },
+    { name: "tailwindcss", imageUrl: "/icons/tailwind.png" },
     { name: "Java", imageUrl: "/icons/java.png" },
     { name: "python", imageUrl: "/icons/python.png" },
-    { name: "tailwindcss", imageUrl: "/icons/tailwind.png" },
     { name: "Git", imageUrl: "/icons/git.png" },
     { name: "GitHub", imageUrl: "/icons/github.png" },
     { name: "Vs Code", imageUrl: "/icons/vsStudio.png" }
@@ -347,12 +347,12 @@ function App() {
             .about-text p { text-align: left; line-height: 1.6; max-width: 100%; }
 
             /* === CSS FOR EVERVAULT SKILL CARDS (CORRECTED) === */
-            .skills-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; width: 100%; max-width: 1000px; }
+            .skills-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; width: 100%; max-width: 1100px; }
             .evervault-wrapper { background: transparent; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; position: relative; }
             .evervault-card { border-radius: 1.5rem; width: 100%; position: relative; overflow: hidden; background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; height: 100%; }
             .evervault-mask, .evervault-gradient, .evervault-blend-overlay { position: absolute; inset: 0; border-radius: 1.5rem; opacity: 0; transition: opacity 0.5s ease; }
             .evervault-mask { mask-image: linear-gradient(white, transparent); }
-            .evervault-gradient { background-image: linear-gradient(to right, #34d399, #3b82f6); backdrop-filter: blur(16px); }
+            .evervault-gradient { background-image: linear-gradient(to right, #886be7, #1a0c47); backdrop-filter: blur(16px); }
             .evervault-blend-overlay { mix-blend-mode: overlay; }
             .evervault-blend-overlay p { position: absolute; inset: 0; font-family: monospace; font-weight: 700; color: white; }
             .evervault-content-container { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; }
