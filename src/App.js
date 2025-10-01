@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
-
+import { EvervaultCard } from './EvervaultCard';
 
 // --- Plasma Component ---
 const hexToRgb = (hex) => {
@@ -203,10 +203,8 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [typedText, setTypedText] = useState('');
-  
-  // 1. ADD A REF FOR THE IMAGE
   const imageRef = useRef(null);
-  
+
   const typingSpeed = 40;
   const pauseDuration = 1200;
 
@@ -214,8 +212,20 @@ function App() {
   const charIndexRef = useRef(0);
 
   const skills = [
-    "JavaScript (ES6+)", "React", "HTML5", "CSS3", "Node.js", 
-    "Express.js", "MongoDB", "Git", "GitHub", "Socket.io"
+    { name: "HTML5", imageUrl: "/icons/html.png" },
+    { name: "CSS3", imageUrl: "/icons/css.png" },
+    { name: "JavaScript", imageUrl: "/icons/javascript.png" },
+    { name: "React", imageUrl: "/icons/react.png" },
+    { name: "Node.js", imageUrl: "/icons/node.png" },
+    { name: "Express", imageUrl: "/icons/express.png" },
+    { name: "MongoDB", imageUrl: "/icons/mongodb.png" },
+    { name: "Java", imageUrl: "/icons/java.png" },
+    { name: "python", imageUrl: "/icons/python.png" },
+    { name: "tailwindcss", imageUrl: "/icons/tailwind.png" },
+    { name: "Git", imageUrl: "/icons/git.png" },
+    { name: "GitHub", imageUrl: "/icons/github.png" },
+    { name: "Vs Code", imageUrl: "/icons/vsStudio.png" }
+
   ];
 
   useEffect(() => {
@@ -254,7 +264,7 @@ function App() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-  
+
   // NEW useEffect FOR IMAGE TILT & GLOW EFFECT
   useEffect(() => {
     const image = imageRef.current;
@@ -264,7 +274,7 @@ function App() {
       const { left, top, width, height } = image.getBoundingClientRect();
       const x = e.clientX - left;
       const y = e.clientY - top;
-      
+
       const mouseXPercent = x / width;
       const mouseYPercent = y / height;
 
@@ -272,7 +282,7 @@ function App() {
       const rotateX = -(mouseYPercent - 0.5) * 2 * 8;
 
       image.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
-      
+
       image.style.setProperty('--mouse-x', `${x}px`);
       image.style.setProperty('--mouse-y', `${y}px`);
     };
@@ -291,8 +301,8 @@ function App() {
   }, []);
 
   return (
-    <div className="App" id="home"> 
-        <style jsx="true">{`
+    <div className="App" id="home">
+      <style jsx="true">{`
             :global(html) {
               scroll-behavior: smooth;
             }
@@ -311,7 +321,10 @@ function App() {
             .hamburger.open .line:nth-child(1) { transform: rotate(45deg); }
             .hamburger.open .line:nth-child(2) { opacity: 0; transform: translateX(20px); }
             .hamburger.open .line:nth-child(3) { transform: rotate(-45deg); }
-            .hero-name-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; pointer-events: none; z-index: 1; }
+            
+            /* CORRECTED HERO OVERLAY - REMOVED POINTER EVENTS */
+            .hero-name-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; }
+
             .intro-text { font-size: 1.5rem; color: #ccc; margin: 0; text-align: center; }
             .main-name { font-size: 6rem; margin: 0; text-align: center; line-height: 1.1; }
             .subtitle { font-size: 1.4rem; text-align: center; margin-top: 1rem; color: #ccc; }
@@ -324,94 +337,42 @@ function App() {
             .scroll-down-arrow span { display: block; width: 20px; height: 20px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); animation: bounce 2s infinite; }
             @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0) rotate(45deg); } 40% { transform: translateY(-15px) rotate(45deg); } 60% { transform: translateY(-8px) rotate(45deg); } }
             
-            .about-content {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 50px;
-              max-width: 950px;
-              width: 100%;
-              flex-wrap: wrap;
-            }
+            .about-content { display: flex; align-items: center; justify-content: center; gap: 50px; max-width: 950px; width: 100%; flex-wrap: wrap; }
+            .about-image-wrapper { perspective: 1000px; }
+            .about-image { width: 320px; height: 400px; border-radius: 30%; object-fit: cover; border: 3px solid #B19EEF; flex-shrink: 0; position: relative; transition: transform 0.4s ease-out; will-change: transform; }
+            .about-image::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: inherit; background: radial-gradient( 250px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(177, 158, 239, 0.5), transparent 80% ); opacity: 0; transition: opacity 0.4s ease-out; }
+            .about-image:hover::before { opacity: 1; }
+            .about-text { flex: 1; min-width: 300px; }
+            .about-text h3 { font-size: 2rem; margin-bottom: 15px; color: #B19EEF; }
+            .about-text p { text-align: left; line-height: 1.6; max-width: 100%; }
 
-            /* === CSS UPDATES FOR TILT & GLOW EFFECT START === */
-            .about-image-wrapper {
-              perspective: 1000px;
-            }
-            .about-image {
-              width: 320px;
-              height: 400px;
-              border-radius: 30%;
-              object-fit: cover;
-              border: 3px solid #B19EEF;
-              flex-shrink: 0;
-              position: relative; /* Needed for the pseudo-element */
-              transition: transform 0.4s ease-out;
-              will-change: transform;
-            }
-            .about-image::before {
-              content: '';
-              position: absolute;
-              top: 0;
-              left: 0;
-              width: 100%;
-              height: 100%;
-              border-radius: inherit;
-              background: radial-gradient(
-                250px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(177, 158, 239, 0.5),
-                transparent 80%
-              );
-              opacity: 0;
-              transition: opacity 0.4s ease-out;
-            }
-            .about-image:hover::before {
+            /* === CSS FOR EVERVAULT SKILL CARDS (CORRECTED) === */
+            .skills-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; width: 100%; max-width: 1000px; }
+            .evervault-wrapper { background: transparent; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; position: relative; }
+            .evervault-card { border-radius: 1.5rem; width: 100%; position: relative; overflow: hidden; background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; height: 100%; }
+            .evervault-mask, .evervault-gradient, .evervault-blend-overlay { position: absolute; inset: 0; border-radius: 1.5rem; opacity: 0; transition: opacity 0.5s ease; }
+            .evervault-mask { mask-image: linear-gradient(white, transparent); }
+            .evervault-gradient { background-image: linear-gradient(to right, #34d399, #3b82f6); backdrop-filter: blur(16px); }
+            .evervault-blend-overlay { mix-blend-mode: overlay; }
+            .evervault-blend-overlay p { position: absolute; inset: 0; font-family: monospace; font-weight: 700; color: white; }
+            .evervault-content-container { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; }
+            .evervault-content { display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: 700; transition: opacity 0.5s ease; }
+            .evervault-icon { width: 4rem; height: 4rem; margin-bottom: 0.75rem; }
+            .evervault-text { z-index: 20; font-size: 1.125rem; }
+            
+            .evervault-mask.is-hovered,
+            .evervault-gradient.is-hovered,
+            .evervault-blend-overlay.is-hovered {
               opacity: 1;
             }
-            /* === CSS UPDATES END === */
+            .evervault-card.is-hovered .evervault-content {
+              opacity: 0.2; /* Fade out the content on hover */
+            }
+            /* === CSS END === */
 
-            .about-text {
-              flex: 1;
-              min-width: 300px;
-            }
-            .about-text h3 {
-              font-size: 2rem;
-              margin-bottom: 15px;
-              color: #B19EEF;
-            }
-            .about-text p {
-              text-align: left;
-              line-height: 1.6;
-              max-width: 100%;
-            }
-
-            /* === CSS UPDATES FOR SKILLS SECTION START === */
-            .skills-container {
-              width: 100%;
-              max-width: 1000px;
-            }
-            .skills-grid {
-              display: grid;
-              grid-template-columns: repeat(5, 1fr); /* 5 columns on desktop */
-              gap: 20px;
-            }
-            .skill-card {
-              background-color: rgba(255, 255, 255, 0.05);
-              border: 1px solid rgba(255, 255, 255, 0.1);
-              border-radius: 10px;
-              padding: 25px;
-              text-align: center;
-              font-size: 1.1rem;
-              font-weight: 500;
-              transition: transform 0.3s ease, background-color 0.3s ease;
-            }
-            .skill-card:hover {
-              transform: translateY(-5px);
-              background-color: rgba(177, 158, 239, 0.1);
-            }
-            /* Removed .skill-category and .skill-category h3 */
-            /* === CSS UPDATES END === */
-
+            @media (max-width: 900px) { .skills-grid { grid-template-columns: repeat(4, 1fr); } }
+            @media (max-width: 768px) { .skills-grid { grid-template-columns: repeat(3, 1fr); } }
+            @media (max-width: 480px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
             @media (max-width: 768px) {
                 .App-header { padding: 20px 30px; }
                 .App-header.scrolled { padding: 10px 20px; width: 90%; }
@@ -422,28 +383,24 @@ function App() {
                 .content-section h1 { font-size: 2.5rem; }
                 .main-name { font-size: 3.5rem; }
                 .intro-text { font-size: 1.2rem; }
-                .about-content {
-                  text-align: center;
-                }
-                .about-text p {
-                  text-align: center;
-                }
+                .about-content { text-align: center; }
+                .about-text p { text-align: center; }
             }
       `}</style>
-      <Plasma 
+      <Plasma
         color="#B19EEF"
-        speed={0.5} 
+        speed={0.5}
         scale={1.2}
         opacity={1.0}
-        mouseInteractive={true} 
+        mouseInteractive={true}
       />
       <header className={`App-header ${isScrolled ? 'scrolled' : ''}`}>
         <a href="#home" className="logo">My Portfolio</a>
         <nav className={`main-nav ${isMenuOpen ? 'open' : ''}`}>
-            <a href="#home" onClick={() => setIsMenuOpen(false)}>Home</a>
-            <a href="#about" onClick={() => setIsMenuOpen(false)}>About</a>
-            <a href="#skills" onClick={() => setIsMenuOpen(false)}>Skills</a>
-            <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
+          <a href="#home" onClick={() => setIsMenuOpen(false)}>Home</a>
+          <a href="#about" onClick={() => setIsMenuOpen(false)}>About</a>
+          <a href="#skills" onClick={() => setIsMenuOpen(false)}>Skills</a>
+          <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
         </nav>
         <button className={`hamburger ${isMenuOpen ? 'open' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Open navigation menu">
           <div className="line"></div>
@@ -451,7 +408,7 @@ function App() {
           <div className="line"></div>
         </button>
       </header>
-      
+
       <div className="hero-name-overlay">
         <p className="intro-text">Hello, I am</p>
         <h1 className="main-name">Jayashree Das</h1>
@@ -461,17 +418,17 @@ function App() {
       <a href="#about" className="scroll-down-arrow" aria-label="Scroll to next section">
         <span></span>
       </a>
-      
+
       <main>
-        <section id="about" className="content-section" style={{backgroundColor: '#000'}}>
+        <section id="about" className="content-section" style={{ backgroundColor: '#000' }}>
           <h1>About Me</h1>
           <div className="about-content">
             {/* 3. ADDED WRAPPER DIV */}
             <div className="about-image-wrapper">
-              <img 
-                ref={imageRef} 
-                src="/profile.png" 
-                alt="Jayashree" 
+              <img
+                ref={imageRef}
+                src="/profile.png"
+                alt="Jayashree"
                 className="about-image"
               />
             </div>
@@ -488,18 +445,22 @@ function App() {
         </section>
 
         {/* === 2. SIMPLIFIED SKILLS SECTION === */}
-        <section id="skills" className="content-section" style={{backgroundColor: '#000'}}>
-          <h1>Tech Stacks</h1>
-          <div className="skills-container">
-            <div className="skills-grid">
-              {skills.map(skill => <div key={skill} className="skill-card">{skill}</div>)}
-            </div>
+        <section id="skills" className="content-section" style={{ backgroundColor: '#000' }}>
+          <h1>My Skills</h1>
+          <div className="skills-grid">
+            {skills.map((skill) => (
+              <EvervaultCard
+                key={skill.name}
+                text={skill.name}
+                imageUrl={skill.imageUrl}
+              />
+            ))}
           </div>
         </section>
-        
-        <section id="contact" className="content-section" style={{backgroundColor: '#000'}}>
-            <h1>Contact</h1>
-            <p>Here you can add a contact form or links to your social media profiles.</p>
+
+        <section id="contact" className="content-section" style={{ backgroundColor: '#000' }}>
+          <h1>Contact</h1>
+          <p>Here you can add a contact form or links to your social media profiles.</p>
         </section>
       </main>
     </div>
