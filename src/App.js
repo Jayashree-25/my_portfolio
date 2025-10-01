@@ -204,6 +204,9 @@ function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [typedText, setTypedText] = useState('');
   
+  // 1. ADD A REF FOR THE IMAGE
+  const imageRef = useRef(null);
+  
   const typingSpeed = 40;
   const pauseDuration = 1200;
 
@@ -244,6 +247,41 @@ function App() {
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
+  // NEW useEffect FOR IMAGE TILT & GLOW EFFECT
+  useEffect(() => {
+    const image = imageRef.current;
+    if (!image) return;
+
+    const handleMouseMove = (e) => {
+      const { left, top, width, height } = image.getBoundingClientRect();
+      const x = e.clientX - left;
+      const y = e.clientY - top;
+      
+      const mouseXPercent = x / width;
+      const mouseYPercent = y / height;
+
+      const rotateY = (mouseXPercent - 0.5) * 2 * 8; // Max 15deg tilt
+      const rotateX = -(mouseYPercent - 0.5) * 2 * 8;
+
+      image.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+      
+      image.style.setProperty('--mouse-x', `${x}px`);
+      image.style.setProperty('--mouse-y', `${y}px`);
+    };
+
+    const handleMouseLeave = () => {
+      image.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+    };
+
+    image.addEventListener('mousemove', handleMouseMove);
+    image.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      image.removeEventListener('mousemove', handleMouseMove);
+      image.removeEventListener('mouseleave', handleMouseLeave);
     };
   }, []);
 
@@ -290,14 +328,43 @@ function App() {
               width: 100%;
               flex-wrap: wrap;
             }
+
+            /* === CSS UPDATES FOR TILT & GLOW EFFECT START === */
+            .about-image-wrapper {
+              perspective: 1000px;
+            }
             .about-image {
-              width: 300px;
-              height: 350px;
+              width: 320px;
+              height: 400px;
               border-radius: 30%;
               object-fit: cover;
               border: 3px solid #B19EEF;
               flex-shrink: 0;
+              position: relative; /* Needed for the pseudo-element */
+              transition: transform 0.4s ease-out;
+              will-change: transform;
             }
+            .about-image::before {
+              content: '';
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+              border-radius: inherit;
+              background: radial-gradient(
+                250px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(177, 158, 239, 0.5),
+                transparent 80%
+              );
+              opacity: 0;
+              transition: opacity 0.4s ease-out;
+            }
+            .about-image:hover::before {
+              opacity: 1;
+            }
+            /* === CSS UPDATES END === */
+
             .about-text {
               flex: 1;
               min-width: 300px;
@@ -366,18 +433,22 @@ function App() {
         <section id="about" className="content-section" style={{backgroundColor: '#000'}}>
           <h1>About Me</h1>
           <div className="about-content">
-            <img 
-              src="/profile.png" 
-              alt="Jayashree" 
-              className="about-image"
-            />
+            {/* 3. ADDED WRAPPER DIV */}
+            <div className="about-image-wrapper">
+              <img 
+                ref={imageRef} 
+                src="/profile.png" 
+                alt="Jayashree" 
+                className="about-image"
+              />
+            </div>
             <div className="about-text">
               <h3>MERN Stack Developer</h3>
               <p>
-                Hello! I'm Jayashree, a developer with a passion for building beautiful and functional web applications. My journey into the world of code started with a deep curiosity for how things work, and it has since evolved into a career where I can solve real-world problems.
+                Hi, I'm a full-stack developer and Computer Science student who loves bringing ideas to life on the web. My journey into the world of code is driven by a deep curiosity for solving real-world problems. I specialize in the MERN stack (MongoDB, Express.js, React, Node.js), building dynamic and responsive web applications from concept to deployment.
               </p>
               <p>
-                I specialize in the MERN stack but I'm always eager to explore new technologies and expand my skill set. When I'm not coding, you can find me contributing to open-source projects or exploring the latest trends in cloud technology.
+                Outside of my projects, I'm an enthusiastic open-source contributor, as I believe in the power of community and collaborative learning. I'm constantly seeking new challenges that will push my skills to the next level.
               </p>
             </div>
           </div>
@@ -391,6 +462,5 @@ function App() {
     </div>
   );
 }
-
 
 export default App;
