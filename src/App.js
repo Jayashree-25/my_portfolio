@@ -213,6 +213,11 @@ function App() {
   const textIndexRef = useRef(0);
   const charIndexRef = useRef(0);
 
+  const skills = [
+    "JavaScript (ES6+)", "React", "HTML5", "CSS3", "Node.js", 
+    "Express.js", "MongoDB", "Git", "GitHub", "Socket.io"
+  ];
+
   useEffect(() => {
     const textArray = [
       "MERN Stack Developer || Full-Stack Web Developer",
@@ -380,6 +385,33 @@ function App() {
               max-width: 100%;
             }
 
+            /* === CSS UPDATES FOR SKILLS SECTION START === */
+            .skills-container {
+              width: 100%;
+              max-width: 1000px;
+            }
+            .skills-grid {
+              display: grid;
+              grid-template-columns: repeat(5, 1fr); /* 5 columns on desktop */
+              gap: 20px;
+            }
+            .skill-card {
+              background-color: rgba(255, 255, 255, 0.05);
+              border: 1px solid rgba(255, 255, 255, 0.1);
+              border-radius: 10px;
+              padding: 25px;
+              text-align: center;
+              font-size: 1.1rem;
+              font-weight: 500;
+              transition: transform 0.3s ease, background-color 0.3s ease;
+            }
+            .skill-card:hover {
+              transform: translateY(-5px);
+              background-color: rgba(177, 158, 239, 0.1);
+            }
+            /* Removed .skill-category and .skill-category h3 */
+            /* === CSS UPDATES END === */
+
             @media (max-width: 768px) {
                 .App-header { padding: 20px 30px; }
                 .App-header.scrolled { padding: 10px 20px; width: 90%; }
@@ -410,6 +442,7 @@ function App() {
         <nav className={`main-nav ${isMenuOpen ? 'open' : ''}`}>
             <a href="#home" onClick={() => setIsMenuOpen(false)}>Home</a>
             <a href="#about" onClick={() => setIsMenuOpen(false)}>About</a>
+            <a href="#skills" onClick={() => setIsMenuOpen(false)}>Skills</a>
             <a href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</a>
         </nav>
         <button className={`hamburger ${isMenuOpen ? 'open' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Open navigation menu">
@@ -450,6 +483,16 @@ function App() {
               <p>
                 Outside of my projects, I'm an enthusiastic open-source contributor, as I believe in the power of community and collaborative learning. I'm constantly seeking new challenges that will push my skills to the next level.
               </p>
+            </div>
+          </div>
+        </section>
+
+        {/* === 2. SIMPLIFIED SKILLS SECTION === */}
+        <section id="skills" className="content-section" style={{backgroundColor: '#000'}}>
+          <h1>Tech Stacks</h1>
+          <div className="skills-container">
+            <div className="skills-grid">
+              {skills.map(skill => <div key={skill} className="skill-card">{skill}</div>)}
             </div>
           </div>
         </section>
