@@ -351,13 +351,13 @@ function App() {
             .skills-grid { 
               display: grid; 
               grid-template-columns: repeat(5, 1fr); 
-              gap: 20px; 
+              gap: 25px; 
               width: 100%; 
               max-width: 1000px; 
             }
             .view-all-card {
               background-color: transparent;
-              border: 2px dashed rgba(255, 255, 255, 0.2);
+              border: 2px solid rgba(255, 255, 255, 0.2);
               border-radius: 1.5rem;
               aspect-ratio: 1 / 1;
               display: flex;
@@ -371,7 +371,7 @@ function App() {
               transition: all 0.3s ease;
             }
             .view-all-card:hover {
-              border-color: #B19EEF;
+              border-color: linear-gradient(90deg, #886be7, #1a0c47);
               color: #B19EEF;
               background-color: rgba(177, 158, 239, 0.1);
             }
@@ -489,7 +489,7 @@ function App() {
               />
             ))}
             {/* Add the special "View All" card */}
-            <a href="#" className="view-all-card">
+            <a href="/skills" className="view-all-card">
               <span className="plus-icon">+</span>
               <span>View All</span>
             </a>
