@@ -225,8 +225,9 @@ function App() {
     { name: "Git", imageUrl: "/icons/git.png" },
     { name: "GitHub", imageUrl: "/icons/github.png" },
     { name: "Vs Code", imageUrl: "/icons/vsStudio.png" }
-
   ];
+
+  const featuredSkills = skills.slice(0, 9);
 
   useEffect(() => {
     const textArray = [
@@ -347,7 +348,38 @@ function App() {
             .about-text p { text-align: left; line-height: 1.6; max-width: 100%; }
 
             /* === CSS FOR EVERVAULT SKILL CARDS (CORRECTED) === */
-            .skills-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; width: 100%; max-width: 1100px; }
+            .skills-grid { 
+              display: grid; 
+              grid-template-columns: repeat(5, 1fr); 
+              gap: 20px; 
+              width: 100%; 
+              max-width: 1000px; 
+            }
+            .view-all-card {
+              background-color: transparent;
+              border: 2px dashed rgba(255, 255, 255, 0.2);
+              border-radius: 1.5rem;
+              aspect-ratio: 1 / 1;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column;
+              color: rgba(255, 255, 255, 0.5);
+              font-weight: 700;
+              font-size: 1.125rem;
+              text-decoration: none;
+              transition: all 0.3s ease;
+            }
+            .view-all-card:hover {
+              border-color: #B19EEF;
+              color: #B19EEF;
+              background-color: rgba(177, 158, 239, 0.1);
+            }
+            .plus-icon {
+              font-size: 3rem;
+              line-height: 1;
+              font-weight: 200;
+            }
             .evervault-wrapper { background: transparent; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; position: relative; }
             .evervault-card { border-radius: 1.5rem; width: 100%; position: relative; overflow: hidden; background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; height: 100%; }
             .evervault-mask, .evervault-gradient, .evervault-blend-overlay { position: absolute; inset: 0; border-radius: 1.5rem; opacity: 0; transition: opacity 0.5s ease; }
@@ -445,16 +477,22 @@ function App() {
         </section>
 
         {/* === 2. SIMPLIFIED SKILLS SECTION === */}
-        <section id="skills" className="content-section" style={{ backgroundColor: '#000' }}>
+        <section id="skills" className="content-section" style={{backgroundColor: '#000'}}>
           <h1>My Skills</h1>
           <div className="skills-grid">
-            {skills.map((skill) => (
+            {/* Map over the first 9 skills */}
+            {featuredSkills.map((skill) => (
               <EvervaultCard
                 key={skill.name}
                 text={skill.name}
                 imageUrl={skill.imageUrl}
               />
             ))}
+            {/* Add the special "View All" card */}
+            <a href="#" className="view-all-card">
+              <span className="plus-icon">+</span>
+              <span>View All</span>
+            </a>
           </div>
         </section>
 
