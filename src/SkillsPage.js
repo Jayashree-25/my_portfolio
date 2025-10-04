@@ -57,15 +57,15 @@ const SkillsPage = () => {
             <h3>{category}</h3>
             <p className="category-description">{description}</p>
             <div className="skills-grid">
-              {skills.map((skill) => (
-                <EvervaultCard
-                  key={skill.name}
-                  text={skill.name}
-                  imageUrl={skill.imageUrl}
-                  hoverEffectEnabled={false}
-                />
-              ))}
-            </div>
+        {skills.map((skill) => (
+          <EvervaultCard
+            key={skill.name}
+            text={skill.name}
+            imageUrl={skill.imageUrl}
+            hoverEffect="zoom" // This tells the card to use the zoom effect
+          />
+        ))}
+      </div>
           </div>
         ))}
       </div>

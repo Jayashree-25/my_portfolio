@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+// src/EvervaultCard.js
+
+import React, { useState, useEffect } from "react";
 import { useMotionValue, useMotionTemplate, motion } from "framer-motion";
 import clsx from 'clsx';
 
@@ -17,13 +19,13 @@ export const CardPattern = ({ mouseX, mouseY, isHovered }) => {
   );
 };
 
-export const EvervaultCard = ({ text, imageUrl, className, hoverEffectEnabled = true }) => {
+export const EvervaultCard = ({ text, imageUrl, className, hoverEffect = 'evervault' }) => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const [isHovered, setIsHovered] = useState(false);
 
   function onMouseMove({ currentTarget, clientX, clientY }) {
-    if (!hoverEffectEnabled) return; // Stop if effect is disabled
+    if (hoverEffect !== 'evervault') return; // Only run for the default effect
     let { left, top } = currentTarget.getBoundingClientRect();
     mouseX.set(clientX - left);
     mouseY.set(clientY - top);
@@ -33,12 +35,18 @@ export const EvervaultCard = ({ text, imageUrl, className, hoverEffectEnabled = 
     <div className={`evervault-wrapper ${className || ''}`}>
       <div
         onMouseMove={onMouseMove}
-        onMouseEnter={() => hoverEffectEnabled && setIsHovered(true)} // Only set hover if enabled
-        onMouseLeave={() => hoverEffectEnabled && setIsHovered(false)} // Only set hover if enabled
-        className={clsx("evervault-card", { "is-hovered": isHovered })}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={clsx(
+          "evervault-card",
+          // Only apply complex hover class if the effect is 'evervault'
+          { "is-hovered": isHovered && hoverEffect === 'evervault' },
+          // Apply a simple zoom class if the effect is 'zoom'
+          { "zoom-hover": hoverEffect === 'zoom' }
+        )}
       >
-        {/* Render the pattern only if the effect is enabled */}
-        {hoverEffectEnabled && (
+        {/* Only render the complex pattern for the 'evervault' effect */}
+        {hoverEffect === 'evervault' && (
             <CardPattern
               mouseX={mouseX}
               mouseY={mouseY}
