@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import { EvervaultCard } from './EvervaultCard';
-import { Link, Routes, Route } from 'react-router-dom';
+import { Link, Routes, Route, useLocation } from 'react-router-dom';
 import SkillsPage from './SkillsPage';
 import './App.css';
 
@@ -200,6 +200,16 @@ const Plasma = ({
   return <div ref={containerRef} className="fixed top-0 left-0 w-full h-full -z-10" />;
 };
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
+
 const HomePage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -392,10 +402,13 @@ const HomePage = () => {
 // --- App Component (Final Version) ---
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/skills" element={<SkillsPage />} />
-    </Routes>
+    <>
+      <ScrollToTop /> {/* 3. ADD THE COMPONENT HERE */}
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/skills" element={<SkillsPage />} />
+      </Routes>
+    </>
   );
 }
 
