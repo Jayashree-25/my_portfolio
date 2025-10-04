@@ -384,11 +384,6 @@ body {
   opacity: 1;
 }
 
-.evervault-card.is-hovered .evervault-content {
-  opacity: 0.2;
-  /* Fade out the content on hover */
-}
-
 .skills-page-container {
               background-color: #000;
               color: white;
