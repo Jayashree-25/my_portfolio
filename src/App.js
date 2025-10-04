@@ -3,6 +3,7 @@ import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import { EvervaultCard } from './EvervaultCard';
 import { Link, Routes, Route } from 'react-router-dom';
 import SkillsPage from './SkillsPage';
+import './App.css';
 
 // --- Plasma Component ---
 const hexToRgb = (hex) => {
@@ -302,142 +303,7 @@ const HomePage = () => {
 
   return (
     <div className="App" id="home">
-      <style jsx="true">{`
-            :global(html) {
-              scroll-behavior: smooth;
-            }
-            .App { background-color: #000; color: white; }
-            .App-header { position: fixed; top: 0; left: 0; width: 100%; padding: 20px 50px; box-sizing: border-box; z-index: 10; display: flex; justify-content: space-between; align-items: center; transition: width 0.4s ease-in-out, top 0.4s ease-in-out, padding 0.4s ease-in-out, background-color 0.4s ease-in-out, backdrop-filter 0.4s ease-in-out; will-change: width, top, padding; }
-            .App-header.scrolled { background-color: rgba(10, 10, 10, 0.7); backdrop-filter: blur(10px); padding: 15px 50px; top: 15px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); }
-            .logo { font-size: 1.8rem; font-weight: bold; color: white; text-decoration: none; transition: font-size 0.4s ease; }
-            .App-header.scrolled .logo { font-size: 1.5rem; }
-            .main-nav { display: flex; }
-            .main-nav a { color: white; text-decoration: none; margin: 0 15px; font-size: 1.2rem; transition: color 0.3s ease; }
-            .main-nav a:last-child { margin-right: 0; }
-            .main-nav a:hover { color: #B19EEF; }
-            .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 2rem; height: 2rem; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 20; }
-            .hamburger:focus { outline: none; }
-            .hamburger .line { width: 2rem; height: 0.25rem; background: white; border-radius: 10px; transition: all 0.3s linear; position: relative; transform-origin: 1px; }
-            .hamburger.open .line:nth-child(1) { transform: rotate(45deg); }
-            .hamburger.open .line:nth-child(2) { opacity: 0; transform: translateX(20px); }
-            .hamburger.open .line:nth-child(3) { transform: rotate(-45deg); }
-            
-            /* CORRECTED HERO OVERLAY - REMOVED POINTER EVENTS */
-            .hero-name-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1; }
-
-            .intro-text { font-size: 1.5rem; color: #ccc; margin: 0; text-align: center; }
-            .main-name { font-size: 6rem; margin: 0; text-align: center; line-height: 1.1; }
-            .subtitle { font-size: 1.4rem; text-align: center; margin-top: 1rem; color: #ccc; }
-            .typewriter-cursor::after { content: '|'; color: white; animation: blink 1s step-end infinite; }
-            @keyframes blink { from, to { color: transparent; } 50% { color: white; } }
-            .content-section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 100px 50px; box-sizing: border-box; position: relative; }
-            .content-section h1 { font-size: 4rem; margin-bottom: 20px; text-align: center; }
-            .content-section p { font-size: 1.2rem; max-width: 600px; text-align: center; color: #ccc; }
-            .scroll-down-arrow { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 5; }
-            .scroll-down-arrow span { display: block; width: 20px; height: 20px; border-bottom: 2px solid white; border-right: 2px solid white; transform: rotate(45deg); animation: bounce 2s infinite; }
-            @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0) rotate(45deg); } 40% { transform: translateY(-15px) rotate(45deg); } 60% { transform: translateY(-8px) rotate(45deg); } }
-            
-            .about-content { display: flex; align-items: center; justify-content: center; gap: 50px; max-width: 950px; width: 100%; flex-wrap: wrap; }
-            .about-image-wrapper { perspective: 1000px; }
-            .about-image { width: 320px; height: 400px; border-radius: 30%; object-fit: cover; border: 3px solid #B19EEF; flex-shrink: 0; position: relative; transition: transform 0.4s ease-out; will-change: transform; }
-            .about-image::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: inherit; background: radial-gradient( 250px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(177, 158, 239, 0.5), transparent 80% ); opacity: 0; transition: opacity 0.4s ease-out; }
-            .about-image:hover::before { opacity: 1; }
-            .about-text { flex: 1; min-width: 300px; }
-            .about-text h3 { font-size: 2rem; margin-bottom: 15px; color: #B19EEF; }
-            .about-text p { text-align: left; line-height: 1.6; max-width: 100%; }
-
-            /* === CSS FOR EVERVAULT SKILL CARDS (CORRECTED) === */
-            .skills-grid { 
-              display: grid; 
-              grid-template-columns: repeat(5, 1fr); 
-              gap: 25px; 
-              width: 100%; 
-              max-width: 1000px; 
-            }
-            .view-all-card {
-              background-color: transparent;
-              border: 2px solid rgba(255, 255, 255, 0.2);
-              border-radius: 1.5rem;
-              aspect-ratio: 1 / 1;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              flex-direction: column;
-              color: rgba(255, 255, 255, 0.5);
-              font-weight: 700;
-              font-size: 1.125rem;
-              text-decoration: none;
-              transition: all 0.3s ease;
-            }
-            .view-all-card:hover {
-              border-color: linear-gradient(90deg, #886be7, #1a0c47);
-              color: #B19EEF;
-              background-color: rgba(177, 158, 239, 0.1);
-            }
-            .plus-icon {
-              font-size: 3rem;
-              line-height: 1;
-              font-weight: 200;
-            }
-            .evervault-wrapper { background: transparent; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; position: relative; }
-            .evervault-card { border-radius: 1.5rem; width: 100%; position: relative; overflow: hidden; background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); display: flex; align-items: center; justify-content: center; height: 100%; }
-            .evervault-mask, .evervault-gradient, .evervault-blend-overlay { position: absolute; inset: 0; border-radius: 1.5rem; opacity: 0; transition: opacity 0.5s ease; }
-            .evervault-mask { mask-image: linear-gradient(white, transparent); }
-            .evervault-gradient { background-image: linear-gradient(to right, #886be7, #1a0c47); backdrop-filter: blur(16px); }
-            .evervault-blend-overlay { mix-blend-mode: overlay; }
-            .evervault-blend-overlay p { position: absolute; inset: 0; font-family: monospace; font-weight: 700; color: white; }
-            .evervault-content-container { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; }
-            .evervault-content { display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-weight: 700; transition: opacity 0.5s ease; }
-            .evervault-icon { width: 4rem; height: 4rem; margin-bottom: 0.75rem; }
-            .evervault-text { z-index: 20; font-size: 1.125rem; }
-            
-            .evervault-mask.is-hovered,
-            .evervault-gradient.is-hovered,
-            .evervault-blend-overlay.is-hovered {
-              opacity: 1;
-            }
-            .evervault-card.is-hovered .evervault-content {
-              opacity: 0.2; /* Fade out the content on hover */
-            }
-            /* === CSS END === */
-
-            @media (max-width: 900px) { .skills-grid { grid-template-columns: repeat(4, 1fr); } }
-            @media (max-width: 768px) { .skills-grid { grid-template-columns: repeat(3, 1fr); } }
-            @media (max-width: 480px) { .skills-grid { grid-template-columns: repeat(2, 1fr); } }
-            @media (max-width: 768px) {
-                .App-header { padding: 20px 30px; }
-                .App-header.scrolled { padding: 10px 20px; width: 90%; }
-                .main-nav { display: none; }
-                .main-nav.open { display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; right: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.98); }
-                .main-nav a { font-size: 2rem; margin: 2rem 0; }
-                .hamburger { display: flex; }
-                .content-section h1 { font-size: 2.5rem; }
-                .main-name { font-size: 3.5rem; }
-                .intro-text { font-size: 1.2rem; }
-                .about-content { text-align: center; }
-                .about-text p { text-align: center; }
-            }
-
-            /* 3. ADD THIS NEW CSS FOR THE SKILLS PAGE */
-            .skills-page-container {
-              background-color: #000;
-              color: white;
-              padding: 50px;
-              min-height: 100vh;
-            }
-            .back-button {
-              font-size: 1.2rem;
-              color: #B19EEF;
-              text-decoration: none;
-              margin-bottom: 40px;
-              display: inline-block;
-            }
-            .skills-page-container h1 {
-              font-size: 4rem;
-              text-align: center;
-              margin-bottom: 40px;
-            }
-      `}</style>
+      
       <Plasma
         color="#B19EEF"
         speed={0.5}
