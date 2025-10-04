@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import { EvervaultCard } from './EvervaultCard';
+import { Link, Routes, Route } from 'react-router-dom';
+import SkillsPage from './SkillsPage';
 
 // --- Plasma Component ---
 const hexToRgb = (hex) => {
@@ -197,9 +199,7 @@ const Plasma = ({
   return <div ref={containerRef} className="fixed top-0 left-0 w-full h-full -z-10" />;
 };
 
-
-// --- App Component (Final Version) ---
-function App() {
+const HomePage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [typedText, setTypedText] = useState('');
@@ -210,7 +210,6 @@ function App() {
 
   const textIndexRef = useRef(0);
   const charIndexRef = useRef(0);
-
   const skills = [
     { name: "HTML5", imageUrl: "/icons/html.png" },
     { name: "CSS3", imageUrl: "/icons/css.png" },
@@ -418,6 +417,26 @@ function App() {
                 .about-content { text-align: center; }
                 .about-text p { text-align: center; }
             }
+
+            /* 3. ADD THIS NEW CSS FOR THE SKILLS PAGE */
+            .skills-page-container {
+              background-color: #000;
+              color: white;
+              padding: 50px;
+              min-height: 100vh;
+            }
+            .back-button {
+              font-size: 1.2rem;
+              color: #B19EEF;
+              text-decoration: none;
+              margin-bottom: 40px;
+              display: inline-block;
+            }
+            .skills-page-container h1 {
+              font-size: 4rem;
+              text-align: center;
+              margin-bottom: 40px;
+            }
       `}</style>
       <Plasma
         color="#B19EEF"
@@ -477,10 +496,9 @@ function App() {
         </section>
 
         {/* === 2. SIMPLIFIED SKILLS SECTION === */}
-        <section id="skills" className="content-section" style={{backgroundColor: '#000'}}>
+        <section id="skills" className="content-section" style={{ backgroundColor: '#000' }}>
           <h1>My Skills</h1>
           <div className="skills-grid">
-            {/* Map over the first 9 skills */}
             {featuredSkills.map((skill) => (
               <EvervaultCard
                 key={skill.name}
@@ -488,11 +506,11 @@ function App() {
                 imageUrl={skill.imageUrl}
               />
             ))}
-            {/* Add the special "View All" card */}
-            <a href="/skills" className="view-all-card">
+            {/* 4. USE <Link> COMPONENT FOR THE "VIEW ALL" CARD */}
+            <Link to="/skills" className="view-all-card">
               <span className="plus-icon">+</span>
               <span>View All</span>
-            </a>
+            </Link>
           </div>
         </section>
 
@@ -502,6 +520,16 @@ function App() {
         </section>
       </main>
     </div>
+  );
+}
+
+// --- App Component (Final Version) ---
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/skills" element={<SkillsPage />} />
+    </Routes>
   );
 }
 
