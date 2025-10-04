@@ -28,7 +28,7 @@ const SkillsPage = () => {
       ]
     },
     "Languages": {
-      description: "Fluent in versatile languages suitable for a wide range of development tasks.",
+      description: "I write structured and efficient code with a focus on clarity, performance, and problem-solving.",
       skills: [
         { name: "Java", imageUrl: "/icons/java.png" },
         { name: "Python", imageUrl: "/icons/python.png" },
@@ -40,7 +40,8 @@ const SkillsPage = () => {
         { name: "Git", imageUrl: "/icons/git.png" },
         { name: "GitHub", imageUrl: "/icons/github.png" },
         { name: "VS Code", imageUrl: "/icons/vsStudio.png" },
-        { name: "Socket.io", imageUrl: "/icons/socketio.svg" },
+        { name: "Postman", imageUrl: "/icons/postman.png" },
+        { name: "Vercel", imageUrl: "/icons/vercel.png" },
       ]
     }
   };
