@@ -4,6 +4,7 @@ import { EvervaultCard } from './EvervaultCard';
 import { Link, Routes, Route, useLocation } from 'react-router-dom';
 import SkillsPage from './SkillsPage';
 import './App.css';
+import ProjectsPage from './ProjectsPage';
 
 // --- Plasma Component ---
 const hexToRgb = (hex) => {
@@ -239,6 +240,29 @@ const HomePage = () => {
 
   const featuredSkills = skills.slice(0, 9);
 
+  const allProjects = [
+    {
+      title: "Social-Chat",
+      description: "A full-stack social media application that allows users to share posts, upload pictures, follow other users, like and comment on posts. Designed with an intuitive interface and real-time updates to create an engaging social experience.",
+      imageUrl: "/Socialchat.png",
+      link: "#"
+    },
+    {
+      title: "Journal_Web",
+      description: "A personal journal application that enables users to create, read, update, and delete their own entries. Focused on simplicity and privacy, allowing users to manage and revisit their thoughts easily.",
+      imageUrl: "/Journal_web.png",
+      link: "#"
+    },
+    {
+      title: "Pokedex",
+      description: "A web app displaying data for over 800 Pokémon with detailed information and search functionality. Designed for smooth browsing and quick lookup of Pokémon stats, abilities, and types.",
+      imageUrl: "/Pokedex.png",
+      link: "#"
+    }
+  ];
+
+  const featuredProjects = allProjects.slice(0, 3);
+
   useEffect(() => {
     const textArray = [
       "MERN Stack Developer || Full-Stack Web Developer",
@@ -382,12 +406,31 @@ const HomePage = () => {
                 imageUrl={skill.imageUrl}
               />
             ))}
-            {/* 4. USE <Link> COMPONENT FOR THE "VIEW ALL" CARD */}
+            {/*  USE <Link> COMPONENT FOR THE "VIEW ALL" CARD */}
             <Link to="/skills" className="view-all-card">
               <span className="plus-icon">+</span>
               <span>View All</span>
             </Link>
           </div>
+        </section>
+
+        {/* 3. UPDATED PROJECTS SECTION */}
+        <section id="projects" className="content-section">
+          <h1>My Projects</h1>
+          <div className="projects-grid">
+            {featuredProjects.map((project) => (
+              <a key={project.title} href={project.link} className="project-card" target="_blank" rel="noopener noreferrer">
+                <img src={project.imageUrl} alt={project.title} className="project-image" />
+                <div className="project-content">
+                  <h3 className="project-title">{project.title}</h3>
+                  <p className="project-description">{project.description}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+          <Link to="/projects" className="view-all-button">
+            View All Projects
+          </Link>
         </section>
 
         <section id="contact" className="content-section" style={{ backgroundColor: '#000' }}>
@@ -407,6 +450,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/skills" element={<SkillsPage />} />
+        <Route path="/projects" element={<ProjectsPage />} />
       </Routes>
     </>
   );
