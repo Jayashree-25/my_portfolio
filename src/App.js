@@ -373,7 +373,7 @@ const HomePage = () => {
 
         {/* === 2. SIMPLIFIED SKILLS SECTION === */}
         <section id="skills" className="content-section" style={{ backgroundColor: '#000' }}>
-          <h1>My Skills</h1>
+          <h1>Tech Stack</h1>
           <div className="skills-grid">
             {featuredSkills.map((skill) => (
               <EvervaultCard
