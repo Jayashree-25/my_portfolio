@@ -561,6 +561,141 @@ body {
   border-color: #9a86d9;
 }
 
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 1100px;
+}
+
+.contact-info, .contact-form-wrapper {
+  flex: 1;
+  min-width: 300px;
+}
+
+.contact-info h1 {
+  text-align: left;
+}
+
+.contact-intro-text {
+  color: #9ca3af;
+  margin-top: 0.5rem;
+  max-width: 450px;
+  line-height: 1.6;
+}
+
+.contact-details {
+  margin-top: 2rem;
+}
+/* This new rule adds space between the items */
+.contact-details > * + * {
+  margin-top: 2rem;
+}
+
+.contact-detail-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.contact-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #B19EEF;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+.social-links-container {
+  margin-top: 2rem;
+}
+
+.social-links-container h3 {
+  color: #d1d5db;
+}
+
+.social-icons {
+  display: flex;
+  margin-top: 1rem;
+}
+
+.social-icon {
+  margin-right: 0.75rem;
+  color: #9ca3af;
+  transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+  color: #B19EEF;
+}
+
+.social-icon svg {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.contact-form-wrapper {
+  background-color: #111827; /* dark:bg-gray-900 */
+  border-radius: 0.5rem;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.contact-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.contact-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #d1d5db; /* dark:text-gray-200 */
+}
+
+.form-input, .form-textarea {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1.25rem;
+  margin-top: 0.5rem;
+  color: #d1d5db;
+  background-color: #111827; /* dark:bg-gray-900 */
+  border: 1px solid #4b5563; /* dark:border-gray-700 */
+  border-radius: 0.375rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus, .form-textarea:focus {
+  border-color: #B19EEF;
+  box-shadow: 0 0 0 3px rgba(177, 158, 239, 0.4);
+}
+
+.form-textarea {
+  height: 9rem;
+  resize: vertical;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: white;
+  background-color: #B19EEF;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #9a86d9;
+}
+
 @keyframes blink {
 
   from,
