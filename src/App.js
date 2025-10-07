@@ -5,6 +5,8 @@ import { Link, Routes, Route, useLocation } from 'react-router-dom';
 import SkillsPage from './SkillsPage';
 import './App.css';
 import ProjectsPage from './ProjectsPage';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // --- Plasma Component ---
 const hexToRgb = (hex) => {
@@ -333,6 +335,36 @@ const HomePage = () => {
       image.removeEventListener('mousemove', handleMouseMove);
       image.removeEventListener('mouseleave', handleMouseLeave);
     };
+  }, []);
+
+  // ADD THIS NEW useEffect FOR SCROLL ANIMATIONS
+  useEffect(() => {
+    // Register the ScrollTrigger plugin
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Select all content sections to animate
+    const sections = document.querySelectorAll('.content-section');
+
+    sections.forEach((section) => {
+      // Find the elements inside each section to animate
+      const elementsToAnimate = section.querySelectorAll('h1, .about-content, .skills-grid, .projects-grid, .view-all-button, .contact-container');
+
+      // Set the initial state before animating
+      gsap.set(elementsToAnimate, { opacity: 0, y: 50 });
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top 80%",
+        onEnter: () => gsap.to(elementsToAnimate, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          stagger: 0.2, // Animates elements one after another
+        }),
+        once: false // Ensures the animation not happens once
+      });
+    });
   }, []);
 
   return (
